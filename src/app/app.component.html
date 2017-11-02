@@ -1,0 +1,38 @@
+
+<div #readscroll class="readchat">
+<ul >
+  <ng-container *ngFor="let message of messages | async;let i = index">
+  <li >
+    <div class="row ">
+      <div class="col-sm-1">
+        <div class="thumbnail">
+          <img class="img-responsive user-photo" src="{{message.data.avatar}}">
+        </div><!-- /thumbnail -->
+      </div><!-- /col-sm-1 -->
+
+      <div class="col-sm-5">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <strong>{{ message.data.username}}</strong> <span class="text-muted"></span>
+          </div>
+          <div class="panel-body">
+            {{message.data.content}}
+          </div><!-- /panel-body -->
+        </div><!-- /panel panel-default -->
+      </div><!-- /col-sm-5 -->
+    </div>
+  </li>
+  </ng-container>
+</ul>
+</div>
+
+<div *ngIf="afAuth.authState | async; let user; else showLogin">
+  <h1>Hello {{ user.displayName }}!</h1>
+  <textarea [(ngModel)]="content" name="content" placeholder="Content.."></textarea>
+  <input type="submit" value="Send Message" (click)="sendMessage(user)">
+  <button type="button" class="btn btn-danger" (click)="logout()">Logout</button>
+</div>
+<ng-template #showLogin>
+  <p>Please login.</p>
+  <button type="button" class="btn btn-primary" (click)="login()">Login with Google</button>
+</ng-template>
