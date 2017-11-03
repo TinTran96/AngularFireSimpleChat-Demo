@@ -1,4 +1,4 @@
-# AngularFireChat
+# AngularFire SimpleChat App
 Angular 4 app using AngularFire2 connect to Firebase Cloud Storage (Beta) to get data to page.
 
 [Demo Here](https://angularfirebase-6ac2e.firebaseapp.com/).
