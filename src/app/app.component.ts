@@ -31,12 +31,23 @@ export class AppComponent {
   private messages: any;
   private postDoc: AngularFirestoreDocument<Message>;
   private message: Observable<Message>;
-  private content:string;
+  private content:string="";
+  private empty_flg:boolean=false;
 
   constructor(private afs: AngularFirestore,
-              public afAuth: AngularFireAuth) {}
+              public afAuth: AngularFireAuth) {
+                
+              }
 
   ngOnInit() {
+    this.afAuth.authState.subscribe(res => {
+      if (res && res.uid) {
+        this.user = res;
+        console.log('user is logged in',res);
+      } else {
+        console.log('user not logged in',res);
+      }
+    });
     this.messagesCol = this.afs.collection('messages');
     this.messages = this.messagesCol.snapshotChanges()
       .map(actions => {
@@ -50,18 +61,24 @@ export class AppComponent {
   
   /**
    * Add message data to cloud storage
-   * @param user 
+   * 
    */
-  sendMessage(user) {
-    this.user = user;
-    //The statement below is add without customize key for data, the key will auto generate.
-    //this.afs.collection('posts').add({'username': this.user.displayName, 'content': this.content,'avatar':this.user.photoURL});
-    var size=this.messages.length + 1;
-    var d = new Date()
-    //The statement below is add with customize key for data, the key for data is variable d:date
-    this.afs.collection('messages').doc(d.toString()).set({'username': this.user.displayName, 'content': this.content,'avatar':this.user.photoURL});
-    this.scrollToBottom();
-    this.content="";
+  sendMessage() {
+    if(this.content != "")
+    {
+      //The statement below is add without customize key for data, the key will auto generate.
+      //this.afs.collection('posts').add({'username': this.user.displayName, 'content': this.content,'avatar':this.user.photoURL});
+      var d = new Date();
+      //The statement below is add with customize key for data, the key for data is variable d:date
+      this.afs.collection('messages').doc(d.toString()).set({'username': this.user.displayName, 'content': this.content,'avatar':this.user.photoURL});
+      this.scrollToBottom();
+      this.content="";
+      this.empty_flg = false;
+    }
+    else
+    {
+      this.empty_flg = true;
+    }
   }
 
   /**

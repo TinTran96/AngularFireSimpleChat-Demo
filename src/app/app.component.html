@@ -1,36 +1,40 @@
 
 <div #readscroll class="readchat">
-<ul >
-  <ng-container *ngFor="let message of messages | async;let i = index">
-  <li >
-    <div class="row ">
-      <div class="col-sm-1">
-        <div class="thumbnail">
-          <img class="img-responsive user-photo" src="{{message.data.avatar}}">
-        </div><!-- /thumbnail -->
-      </div><!-- /col-sm-1 -->
-
-      <div class="col-sm-5">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <strong>{{ message.data.username}}</strong> <span class="text-muted"></span>
+  <ul><!--ul-->
+    <ng-container *ngFor="let message of messages | async;let i = index">
+      <li *ngIf="user.displayName == message.data.username" style="width:100%">
+        <div class="msj macro">
+          <div class="avatar"><img class="img-circle" style="width:100%;" src="{{message.data.avatar}}" /></div>
+              <div class="text text-l">
+                  <p>{{message.data.content}}</p>
+                  <!--p><small>'+date+'</small></p-->
+              </div>
           </div>
-          <div class="panel-body">
-            {{message.data.content}}
-          </div><!-- /panel-body -->
-        </div><!-- /panel panel-default -->
-      </div><!-- /col-sm-5 -->
-    </div>
-  </li>
-  </ng-container>
-</ul>
+      </li>
+      <li *ngIf="user.displayName != message.data.username" style="width:100%;">
+        <div class="msj-rta macro">
+            <div class="text text-r">
+                <p>{{message.data.content}}</p>
+            </div>
+            <div class="avatar" style="padding:0px 0px 0px 10px !important">
+              <img class="img-circle" style="width:100%;" src="{{message.data.avatar}}" />
+            </div>  
+        </div>                           
+      </li>
+    </ng-container>
+  </ul><!--ul end-->
 </div>
 
 <div *ngIf="afAuth.authState | async; let user; else showLogin">
-  <h1>Hello {{ user.displayName }}!</h1>
+  <h4>Hello {{ user.displayName }}!</h4>
   <textarea [(ngModel)]="content" name="content" placeholder="Content.."></textarea>
-  <input type="submit" value="Send Message" (click)="sendMessage(user)">
+  <input type="submit" value="Send Message" (click)="sendMessage()">
+  <div *ngIf="empty_flg" class="alert alert-danger alert-dismissable fade in">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    <strong>Error:</strong> Content can not be empty.
+  </div>
   <button type="button" class="btn btn-danger" (click)="logout()">Logout</button>
+  
 </div>
 <ng-template #showLogin>
   <p>Please login.</p>
